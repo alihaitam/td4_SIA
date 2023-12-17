@@ -1,0 +1,58 @@
+Définir les États:
+  AVANCER: l'état où le robot avance en ligne droite.
+  VERIFIER: l'état où le robot évalue son environnement pour détecter les obstacles.
+  TOURNER_GAUCHE: l'état où le robot tourne à gauche pour éviter un obstacle.
+  TOURNER_DROITE: l'état où le robot tourne à droite pour éviter un obstacle.
+  RECULER: l'état où le robot recule s'il rencontre un cul-de-sac.
+  STOP: l'état où le robot s'arrête complètement.
+
+Définir les Transitions:
+  AVANCER -> VERIFIER: si un cycle de temps s'est écoulé.
+  VERIFIER -> TOURNER_GAUCHE: si un obstacle est détecté à droite.
+  VERIFIER -> TOURNER_DROITE: si un obstacle est détecté à gauche.
+  VERIFIER -> AVANCER: si aucun obstacle n'est détecté devant le robot.
+  VERIFIER -> RECULER: si des obstacles sont détectés devant et sur les côtés du robot.
+  TOURNER_GAUCHE -> AVANCER: après avoir complété un angle de rotation prédéterminé.
+  TOURNER_DROITE -> AVANCER: après avoir complété un angle de rotation prédéterminé.
+  RECULER -> TOURNER_GAUCHE ou TOURNER_DROITE: après un court déplacement en arrière.
+  Toute Transition -> STOP: si une commande d'arrêt est reçue.
+
+Pseudo-Code:
+Initialiser le robot en état AVANCER
+Tant que le robot est allumé :
+    Lire les capteurs de distance
+    Selon l'état actuel du robot :
+        Si état est AVANCER :
+            Exécuter la fonction d'avancement
+            Changer l'état en VERIFIER
+
+        Si état est VERIFIER :
+            Obtenir les lectures des capteurs
+            Si obstacle à droite :
+                Changer état en TOURNER_GAUCHE
+            Sinon si obstacle à gauche :
+                Changer état en TOURNER_DROITE
+            Sinon si obstacle devant :
+                Changer état en RECULER
+            Sinon :
+                Changer état en AVANCER
+
+        Si état est TOURNER_GAUCHE :
+            Exécuter la fonction de rotation à gauche
+            Si rotation complétée :
+                Changer état en AVANCER
+
+        Si état est TOURNER_DROITE :
+            Exécuter la fonction de rotation à droite
+            Si rotation complétée :
+                Changer état en AVANCER
+
+        Si état est RECULER :
+            Exécuter la fonction de recul
+            Changer état en TOURNER_GAUCHE ou TOURNER_DROITE après recul
+
+        Si état est STOP :
+            Exécuter la fonction d'arrêt
+            Attendre la commande de redémarrage pour changer l'état en AVANCER
+
+Fin Tant que
